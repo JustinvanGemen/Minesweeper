@@ -10,17 +10,13 @@ public class Element : MonoBehaviour {
 
 	private void Start ()
 	{
-		print(this.gameObject);
 		_spriteRenderer = GetComponent<SpriteRenderer>();
 		
-		if (Random.value <= 0.15)
-		{
-			Mine = true;
-		}
+		if (Random.value <= 0.15) Mine = true;
 
-		int x = (int)transform.position.x;
-		int y = (int)transform.position.y;
-		Grid.Elements[x, y] = this;
+		var x = (int)transform.localPosition.x;
+		var y = (int)transform.localPosition.y;
+		Grid.Elements[x, y] = gameObject;
 	}
 	
 	public void LoadTexture(int adjacent)
@@ -39,8 +35,8 @@ public class Element : MonoBehaviour {
 			print("Loser");
 		}
 		else {
-			int x = (int)transform.position.x;
-			int y = (int)transform.position.y;
+			var x = (int)transform.localPosition.x;
+			var y = (int)transform.localPosition.y;
 			LoadTexture(Grid.AdjacentMines(x, y));
 		}
 		

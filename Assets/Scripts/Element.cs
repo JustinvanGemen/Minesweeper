@@ -14,12 +14,12 @@ public class Element : MonoBehaviour {
 		
 		if (Random.value <= 0.15) Mine = true;
 
-		var x = (int)transform.localPosition.x;
-		var y = (int)transform.localPosition.y;
+		var x = (int)transform.position.x;
+		var y = (int)transform.position.y;
 		Grid.Elements[x, y] = gameObject;
 	}
 	
-	public void LoadTexture(int adjacent)
+	public void UpdateSprite(int adjacent)
 	{
 		_spriteRenderer.sprite = Mine ? MineTexture : EmptyTextures[adjacent];
 	}
@@ -30,17 +30,20 @@ public class Element : MonoBehaviour {
 
 	private void OnMouseUpAsButton() {
 		if (Mine) {
-			Grid.UncoverMines();
-
-			print("Loser");
+			Grid.ShowMines();
 		}
 		else {
-			var x = (int)transform.localPosition.x;
-			var y = (int)transform.localPosition.y;
-			LoadTexture(Grid.AdjacentMines(x, y));
+			
+			int x = (int)transform.position.x;
+			int y = (int)transform.position.y;
+			UpdateSprite(Grid.MinesNearby(x, y));
+			Grid.FunKoffer(x, y);
 		}
-		
-		if (Grid.IsFinished()) print("Winner");
+
+		if (Grid.IsFinished())
+		{
+			//ToDo: Game End.
+		}
 
 	}
 

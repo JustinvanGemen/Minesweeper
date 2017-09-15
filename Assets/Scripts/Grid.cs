@@ -1,55 +1,64 @@
 ﻿using UnityEngine;
 
-public class Grid{
+public class Grid
+{
+    private static bool[,] _visited;
     private const int W = 16;
     private const int H = 16;
     public static GameObject[,] Elements = new GameObject[W, H];
   
     
-    public static void UncoverMines() {
+    public static void ShowMines() {
         foreach (var elem in Elements)
             if (elem.GetComponent<Element>().Mine)
-                elem.GetComponent<Element>().LoadTexture(0);
+                elem.GetComponent<Element>().UpdateSprite(0);
     }
     
     public static bool MineAt(int x, int y) {
         if (x >= 0 && y >= 0 && x < W && y < H)
-            Debug.Log(Elements[x, y].GetComponent<Element>().Mine);
+        {
             return Elements[x, y].GetComponent<Element>().Mine;
+        }
         return false;
     }
 
-    public static int AdjacentMines(int x, int y) {
+    public static int MinesNearby(int x, int y) {
         var count = 0;
 
-        if (MineAt(x,   y+1)) ++count; // top
-        if (MineAt(x+1, y+1)) ++count; // top-right
-        if (MineAt(x+1, y  )) ++count; // right
-        if (MineAt(x+1, y-1)) ++count; // bottom-right
-        if (MineAt(x,   y-1)) ++count; // bottom
-        if (MineAt(x-1, y-1)) ++count; // bottom-left
-        if (MineAt(x-1, y  )) ++count; // left
-        if (MineAt(x-1, y+1)) ++count; // top-left
+        if (MineAt(x,   y+1)) ++count;
+        if (MineAt(x+1, y+1)) ++count;
+        if (MineAt(x+1, y  )) ++count;
+        if (MineAt(x+1, y-1)) ++count;
+        if (MineAt(x,   y-1)) ++count;
+        if (MineAt(x-1, y-1)) ++count;
+        if (MineAt(x-1, y  )) ++count;
+        if (MineAt(x-1, y+1)) ++count;
 
         return count;
     }
-    
-    public static void FFuncover(int x, int y, bool[,] visited) {
+    //Flood Fill Uncover inside joke :)
+    public static void FunKoffer(int x, int y) {
+        _visited = new bool[W,H];
         if (x < 0 || y < 0 || x >= W || y >= H) return;
-        if (visited[x, y])
+        if (_visited[x, y])
             return;
+        
+        Elements[x, y].GetComponent<Element>().UpdateSprite(MinesNearby(x, y));
 
-        Elements[x, y].GetComponent<Element>().LoadTexture(AdjacentMines(x, y));
-
-        if (AdjacentMines(x, y) > 0)
+        if (MinesNearby(x, y) > 0)
             return;
+        
 
-        visited[x, y] = true;
+        _visited[x, y] = true;
 
-        FFuncover(x-1, y, visited);
-        FFuncover(x+1, y, visited);
-        FFuncover(x, y-1, visited);
-        FFuncover(x, y+1, visited);
+        FunKoffer(x-1, y);
+        FunKoffer(x+1, y);
+        FunKoffer(x,   y-1);
+        FunKoffer(x,   y+1);
+        FunKoffer(x-1, y-1);
+        FunKoffer(x+1, y+1);
+        FunKoffer(x-1, y+1);
+        FunKoffer(x+1, y-1);
     }
     
     public static bool IsFinished() {

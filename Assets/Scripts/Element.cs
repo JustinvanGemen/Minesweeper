@@ -10,6 +10,7 @@ public class Element : MonoBehaviour {
 
 	private void Start ()
 	{
+		
 		_spriteRenderer = GetComponent<SpriteRenderer>();
 		
 		if (Random.value <= 0.15) Mine = true;
@@ -17,6 +18,7 @@ public class Element : MonoBehaviour {
 		var x = (int)transform.position.x;
 		var y = (int)transform.position.y;
 		Grid.Elements[x, y] = gameObject;
+		Grid.VisitedCreate();
 	}
 	
 	public void UpdateSprite(int adjacent)

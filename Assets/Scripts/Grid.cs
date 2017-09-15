@@ -6,7 +6,11 @@ public class Grid
     private const int W = 16;
     private const int H = 16;
     public static GameObject[,] Elements = new GameObject[W, H];
-  
+    
+    public static void VisitedCreate()
+    {
+        _visited = new bool[W,H];
+    }
     
     public static void ShowMines() {
         foreach (var elem in Elements)
@@ -38,18 +42,19 @@ public class Grid
     }
     //Flood Fill Uncover inside joke :)
     public static void FunKoffer(int x, int y) {
-        _visited = new bool[W,H];
         if (x < 0 || y < 0 || x >= W || y >= H) return;
         if (_visited[x, y])
+        {
             return;
+        }
         
         Elements[x, y].GetComponent<Element>().UpdateSprite(MinesNearby(x, y));
 
         if (MinesNearby(x, y) > 0)
             return;
         
-
         _visited[x, y] = true;
+        
 
         FunKoffer(x-1, y);
         FunKoffer(x+1, y);
